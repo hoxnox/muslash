@@ -99,7 +99,7 @@ func Action(c *cli.Context) error {
 				tofile = strings.Replace(tofile, filepath.Ext(tofile), ".mp3", 1)
 				out, err := exec.Command("ffmpeg", "-i", path, "-ab", "256k", "-map_metadata", "0", "-id3v2_version", "3", tofile).Output()
 				if err != nil {
-					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": out}).
+					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": out, "cmd": fmt.Sprintf(`ffmpeg -i "%s" -ab 256k 0map_metadata 0 -id3v2_version 3 "%s"`, path, tofile)}).
 						Error("ffmpeg error")
 					return err
 				} else {
@@ -109,7 +109,7 @@ func Action(c *cli.Context) error {
 			} else if !info.IsDir() && filepath.Ext(path) == ".mp3" {
 				out, err := exec.Command("rsync", "-Prh", path, tofile).Output()
 				if err != nil {
-					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": string(out)}).
+					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": string(out), "cmd": fmt.Sprintf(`rsync -Prh "%s" "%s"`, path, tofile)}).
 						Error("ffmpeg error")
 					return err
 				} else {
