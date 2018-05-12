@@ -97,7 +97,7 @@ func Action(c *cli.Context) error {
 
 			if !info.IsDir() && (filepath.Ext(tofile) == ".flac" || filepath.Ext(tofile) == ".m4a") {
 				tofile = strings.Replace(tofile, filepath.Ext(tofile), ".mp3", 1)
-				out, _ := exec.Command("ffmpeg", "-i", path, "-ab", "256k", "-map_metadata", "0", "-id3v2_version", "3", tofile).Output()
+				out, err := exec.Command("ffmpeg", "-i", path, "-ab", "256k", "-map_metadata", "0", "-id3v2_version", "3", tofile).Output()
 				if err != nil {
 					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": out}).
 						Error("ffmpeg error")
@@ -107,7 +107,7 @@ func Action(c *cli.Context) error {
 						Debug("seccess converting")
 				}
 			} else if !info.IsDir() && filepath.Ext(path) == ".mp3" {
-				out, _ := exec.Command("rsync", "-Prh", path, tofile).Output()
+				out, err := exec.Command("rsync", "-Prh", path, tofile).Output()
 				if err != nil {
 					log.WithFields(log.Fields{"message": err.Error(), "from": path, "to": tofile, "out": string(out)}).
 						Error("ffmpeg error")
